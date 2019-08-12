@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--命名空间和接口关联-->
+<mapper namespace="net.wanho.mapper.RoleMapper">
+
+        <!--查询角色和对应的权限信息-->
+        <resultMap id="Role" type="net.wanho.pojo.Role">
+            <id column="roleid" property="roleid"/>
+            <result column="rolename" property="rolename"/>
+        </resultMap>
+
+    <select id="selectRoleAll" resultMap="Role">
+            SELECT * FROM role
+        </select>
+    <!--查询所有权限-->
+    <select id="selectPermissionAll" resultType="net.wanho.pojo.Permission">
+          SELECT * FROM permission
+    </select>
+    <!--根据角色Id查询权限Id-->
+    <select id="selectPermissionIdByRoleId" resultType="java.lang.Integer">
+          SELECT permission_id FROM permission_role WHERE role_id=#{RoleId}
+    </select>
+    <!--修改角色权限前的删除-->
+    <delete id="deleteRolePermission">
+        DELETE FROM permission_role WHERE role_id=#{roleId}
+    </delete>
+
+    <!--修改角色权限删除后的新增-->
+    <insert id="insertRolePermissipon">
+        INSERT INTO permission_role VALUES (#{param2},#{param1})
+    </insert>
+
+    <!--新增角色-->
+    <insert id="insertRole" useGeneratedKeys="true" keyProperty="roleid">
+        INSERT INTO role VALUES (null,#{rolename},1)
+    </insert>
+    <!--删除角色（禁用）-->
+    <update id="deleteRole">
+        UPDATE role SET statuc=0 WHERE roleid=#{roleId}
+    </update>
+</mapper>

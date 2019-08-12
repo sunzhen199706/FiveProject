@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--命名空间和接口关联-->
+<mapper namespace="net.wanho.mapper.UserMapper">
+
+
+    <!--注册用户方法-->
+    <insert id="register" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO user VALUES (null,#{username},#{password},#{salt},#{statuc})
+    </insert>
+    <insert id="addUserRole">
+        INSERT INTO user_role VALUES (#{userid},2)
+    </insert>
+
+    <!--注册时判断用户名是否重复-->
+    <select id="selectByName" resultType="java.lang.Integer">
+        SELECT count(*) FROM user WHERE username=#{name}
+    </select>
+    <!--删除用户角色-->
+    <delete id="deleteRole">
+        DELETE FROM  user_role WHERE user_id=#{id}
+    </delete>
+    <!--删除用户-->
+    <update id="deleteUser">
+        UPDATE user SET statuc=0 WHERE id=#{userId}
+    </update>
+    <!--新增用户角色-->
+    <insert id="insertRole">
+        INSERT INTO  user_role VALUES (#{userId},#{roleId})
+    </insert>
+
+    <!--查询用户和对应的角色信息-->
+    <resultMap id="user" type="net.wanho.pojo.User">
+        <id column="id" property="id"/>
+        <result column="username" property="username"/>
+        <result property="password" column="password"/>
+        <result property="salt" column="salt"/>
+        <result property="statuc" column="statuc"/>
+        <collection property="roles" javaType="java.util.List" ofType="Role">
+            <id column="roleid" property="roleid"/>
+            <result property="rolename" column="rolename"/>
+        </collection>
+    </resultMap>
+    <select id="selectAllUser" resultMap="user">
+        SELECT * from `user` u
+        LEFT JOIN user_role ur on u.id=ur.user_id
+        LEFT JOIN role r ON ur.role_id=r.roleid
+        ORDER BY u.id
+    </select>
+
+    <!--用作修改用户角色的回显-->
+    <select id="selectAllRole" resultType="net.wanho.pojo.Role">
+        SELECT * FROM role
+    </select>
+    <select id="selectUserByName" resultType="net.wanho.pojo.User">
+        SELECT * FROM user WHERE username=#{username}
+    </select>
+</mapper>

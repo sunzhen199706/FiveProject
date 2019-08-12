@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--命名空间和接口关联-->
+<mapper namespace="net.wanho.mapper.PermissionMapper">
+    <!--修改权限名称-->
+    <update id="updatePermissionName">
+        UPDATE permission SET permissionname=#{param1} WHERE permissionid=#{param2}
+    </update>
+
+
+    <!--查询一级权限菜单-->
+    <select id="selectOnePermission" resultType="net.wanho.pojo.Permission">
+        SELECT * FROM permission WHERE paramid=0
+    </select>
+    <!--查询二级权限菜单-->
+    <select id="selectTwoPernission" resultType="net.wanho.pojo.Permission">
+        SELECT * FROM permission WHERE paramid=#{id}
+    </select>
+
+
+
+    <!--删除所选权限-->
+    <delete id="deletePermissionById">
+        DELETE FROM permission WHERE permissionid=#{id}
+    </delete>
+    <!--删除所选权限的下级权限-->
+    <delete id="deletePermissionByParamid">
+        DELETE FROM permission WHERE permissionid=#{paramId}
+    </delete>
+    <!--判断是否有下级权限并返回下级权限对象集合-->
+    <select id="selectLowerMenu" resultType="net.wanho.pojo.Permission">
+        SELECT * FROM permission WHERE paramid=#{id}
+    </select>
+</mapper>
